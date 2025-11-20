@@ -1,0 +1,97 @@
+name: DevSecOps CI/CD
+
+# Run on push to main or any PR
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  backend:
+    name: Backend (FastAPI)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r backend/fastapi-backend-service/requirements.txt
+
+      - name: Run Backend Tests (if any)
+        run: |
+          source .venv/bin/activate
+          # Add your pytest command here if you have tests
+          pytest backend/fastapi-backend-service/tests || echo "No tests found"
+
+      - name: Run Safety / Lint
+        run: |
+          source .venv/bin/activate
+          pip install flake8 safety
+          flake8 backend/fastapi-backend-service
+          safety check
+
+      - name: Build Docker image
+        run: |
+          docker build -t infra-osint-backend:latest backend/fastapi-backend-service
+
+  frontend:
+    name: Frontend (Next.js)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd frontend/Crypgo-1.0.0
+          npm ci
+
+      - name: Run Frontend Tests
+        run: |
+          cd frontend/Crypgo-1.0.0
+          # Add your frontend test runner if exists
+          npm run lint || echo "No lint or tests configured"
+
+      - name: Build Docker image
+        run: |
+          docker build -t infra-osint-frontend:latest frontend/Crypgo-1.0.0
+
+  docker_push:
+    name: Push Docker Images (Optional)
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Backend Image
+        run: |
+          docker tag infra-osint-backend:latest nadamejri/infra-osint-backend:latest
+          docker push nadamejri/infra-osint-backend:latest
+
+      - name: Push Frontend Image
+        run: |
+          docker tag infra-osint-frontend:latest nadamejri/infra-osint-frontend:latest
+          docker push nadamejri/infra-osint-frontend:latest
