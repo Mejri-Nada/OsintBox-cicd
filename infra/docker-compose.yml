@@ -1,0 +1,26 @@
+services:
+  osint-backend:
+    build:
+      context: ../backend/fastapi-backend-service
+      dockerfile: Dockerfile
+    container_name: osint-backend
+    ports:
+      - "8000:8000"
+    networks:
+      - osint-network
+
+  osint-frontend:
+    build:
+      context: ../frontend/Crypgo-1.0.0
+      dockerfile: Dockerfile
+    container_name: osint-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - osint-backend
+    networks:
+      - osint-network
+
+networks:
+  osint-network:
+    driver: bridge
