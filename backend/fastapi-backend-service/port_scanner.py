@@ -129,9 +129,15 @@ async def run_port_scan(target: str) -> Dict[str, Any]:
             ip = resolved_ip
             print(f"Resolved {target} to IP: {ip}")
         else:
-            error_msg = f"Could not resolve domain '{target}' to IP. Scan cannot proceed."
+            error_msg = (
+                f"Could not resolve domain '{target}' to IP. Scan cannot proceed."
+            )
             print(error_msg)
-            return {"status": "error", "error": error_msg, "note": "DNS resolution failed."}
+            return {
+                "status": "error",
+                "error": error_msg,
+                "note": "DNS resolution failed."
+            }
     else:
         print(f"Target is already an IP address: {ip}")
 
@@ -149,6 +155,8 @@ async def run_port_scan(target: str) -> Dict[str, Any]:
         "note": final_note
     }
 
+
+
 async def main():
     """Example usage of the run_port_scan function."""
     print("Running port scan for 'scanme.nmap.org'...")
@@ -161,7 +169,10 @@ async def main():
     print("Open Ports:")
     if results['ports']:
         for service in results['services']:
-            print(f"  - Port: {service['port']}, Protocol: {service['protocol']}, Service: {service['service']}")
+            print(
+                f"  - Port: {service['port']}, Protocol: {service['protocol']}, "
+                f"Service: {service['service']}"
+            )
     else:
         print("  - No open ports found.")
     print("--------------------")
