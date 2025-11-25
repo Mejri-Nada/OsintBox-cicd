@@ -1,3 +1,5 @@
 frontend/Crypgo-1.0.0/Figma[[:space:]]File/*.fig filter=lfs diff=lfs merge=lfs -text
 frontend/Crypgo-1.0.0/node_modules/**/next-swc*.node filter=lfs diff=lfs merge=lfs -text
 frontend/Crypgo-1.0.0/node_modules/**/*.node filter=lfs diff=lfs merge=lfs -text
+*.fig filter=lfs diff=lfs merge=lfs -text
+frontend/Crypgo-1.0.0/node_modules/@next/swc-win32-x64-msvc/next-swc.win32-x64-msvc.node filter=lfs diff=lfs merge=lfs -text
