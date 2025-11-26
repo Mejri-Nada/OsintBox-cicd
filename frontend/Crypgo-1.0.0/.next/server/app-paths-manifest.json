@@ -1,7 +1,0 @@
-{
-  "/(site)/openports/page": "app/(site)/openports/page.js",
-  "/(site)/techvuln/page": "app/(site)/techvuln/page.js",
-  "/(site)/dnsenum/page": "app/(site)/dnsenum/page.js",
-  "/(site)/phishing/page": "app/(site)/phishing/page.js",
-  "/page": "app/page.js"
-}
